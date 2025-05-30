@@ -51,6 +51,12 @@ Make sure the downloaded model (e.g., `unixcoder-nine/`) is placed in the approp
 
 ---
 
+## Checkpoints for Quick Testing
+
+To test without retraining, download the pretrained checkpoints from the following anonymous Figshare link: [Download Checkpoints (Figshare)](https://figshare.com/s/5beb0f16a9233f73852b?file=54953453)
+
+---
+
 ## Running Experiments
 
 Below are the core commands to reproduce the experiments.
