@@ -4,6 +4,18 @@ This repository contains code and scripts for experiments investigating how line
 
 ---
 
+## UnixCoder Model Setup
+
+HuggingFace does not fully support UnixCoder, so you must download it manually:
+
+```bash
+python download_unixcoder.py
+```
+
+Make sure the downloaded model (e.g., `unixcoder-nine/`) is placed in the appropriate location and used as `--model_name_or_path`.
+
+---
+
 ## Dataset Preparation
 
 ### 1. Download Datasets
@@ -37,18 +49,6 @@ git clone https://github.com/qemu/qemu.git detection/qemu
 cd detection
 python devign_filtering.py
 ```
-
----
-
-## UnixCoder Model Setup
-
-HuggingFace does not fully support UnixCoder, so you must download it manually:
-
-```bash
-python download_unixcoder.py
-```
-
-Make sure the downloaded model (e.g., `unixcoder-nine/`) is placed in the appropriate location and used as `--model_name_or_path`.
 
 ---
 
