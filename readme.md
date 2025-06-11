@@ -34,7 +34,8 @@ git clone https://github.com/FFmpeg/FFmpeg.git detection/FFmpeg
 git clone https://github.com/qemu/qemu.git detection/qemu
 
 # Then run:
-python detection/devign_filtering.py
+cd detection
+python devign_filtering.py
 ```
 
 ---
