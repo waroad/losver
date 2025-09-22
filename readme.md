@@ -1,6 +1,10 @@
 # Line-Level Guided Vulnerability Detection and Classification
 
-This repository contains code and scripts for experiments investigating how line-level modifiability signals improve software vulnerability detection and classification. The experiments are based on two widely-used benchmark datasets: **Devign** and **Big-Vul**.
+This repository contains code and scripts for experiments investigating how line-level modifiability signals improve software vulnerability detection and classification. 
+
+The experiments are based on three widely-used benchmark datasets: **Devign**, **Big-Vul** and **PrimeVul**.
+
+This work is presented in **LOSVER: Line-Level Modifiability Signal-Guided Vulnerability Detection and Classification**, published at ASE 2025.
 
 ---
 
@@ -24,32 +28,41 @@ You must **manually download** the following datasets:
 
 - [Devign Dataset]
 - [Big-Vul Dataset]
+- [PrimeVul Dataset(paired)]
 
-### 2. Filtering the Datasets
+### 2. Preprocessing the Datasets
 
 After downloading, place the datasets in the correct directories:
 
 - Put the **Devign** dataset in `detection/`
 - Put the **Big-Vul** dataset in `classification/`
+- Put the **PrimeVul** dataset in `detection_primevul/`
 
-Then, run the following scripts to filter the raw datasets:
+Then, run the following scripts to preprocess the raw datasets:
 
-```bash
-# Filter Big-Vul
-python classification/CWE_filtering.py
-```
 
 ```bash
-# Before filtering Devign, clone the following repositories into `detection/`:
+# Before preprocess Devign, clone the following repositories into `detection/`:
 git clone https://github.com/FFmpeg/FFmpeg.git detection/FFmpeg
 
 git clone https://github.com/qemu/qemu.git detection/qemu
 
 # Then run:
 cd detection
-python devign_filtering.py
+python devign_preprocess.py
 ```
 
+```bash
+# Preprocess Big-Vul
+cd classification
+python bigvul_preprocess.py
+```
+
+```bash
+# Preprocess PrimeVul
+cd detection_primevul
+python primevul_preprocess.py
+```
 ---
 
 ## Checkpoints for Quick Testing
@@ -188,6 +201,60 @@ python run_base_CWE.py \
 ```
 
 ---
+### Detection (PrimeVul)
+
+#### 1. Modifiable Line Localizer
+
+```bash
+python run_line_primevul.py \
+  --output_dir=./unix_512_primevul_localizer \
+  --model_type roberta \
+  --model_name_or_path=../unixcoder-nine \
+  --tokenizer_name=../unixcoder-nine \
+  --train_data_file=primevul_train_paired_gt.jsonl \
+  --eval_data_file=primevul_valid_paired_gt.jsonl \
+  --test_data_file=primevul_test_paired_gt.jsonl \
+  --block_size=512 \
+  --seed=123456 \
+  --do_train \
+  --do_test
+```
+
+#### 2. Weighted Vulnerability Detector
+
+```bash
+python run_weighted_primevul.py \
+  --output_dir=./unix_512_primevul_detector \
+  --model_type roberta \
+  --model_name_or_path=../unixcoder-nine \
+  --tokenizer_name=../unixcoder-nine \
+  --localized_location=./unix_512_primevul_localizer \
+  --block_size=512 \
+  --seed=123456 \
+  --do_train \
+  --do_test \
+  --use_ground_truth
+```
+Add ```use_ground_truth``` to utilize ground-truth lines, exclude it to utilize predicted lines.
+
+#### 3. Baseline Comparison
+
+```bash
+python run_base_primevul.py \
+  --output_dir=./unix_512_primevul_base \
+  --model_type roberta \
+  --model_name_or_path=../unixcoder-nine \
+  --tokenizer_name=../unixcoder-nine \
+  --train_data_file=primevul_train_paired_gt.jsonl \
+  --eval_data_file=primevul_valid_paired_gt.jsonl \
+  --test_data_file=primevul_test_paired_gt.jsonl \
+  --block_size=512 \
+  --seed=123456 \
+  --do_train \
+  --do_test
+```
+
+---
 
 ## Ablation Study (RQ2)
 
@@ -230,18 +297,23 @@ python run_gpt.py
 
 ```
 ├── classification/
-│   ├── CWE_filtering.py
+│   ├── bigvul_preprocess.py
+│   ├── run_base_CWE.py
 │   ├── run_line_CWE.py
-│   ├── run_weighted_CWE.py
-│   └── run_base_CWE.py
+│   └── run_weighted_CWE.py
 ├── detection/
-│   ├── devign_filtering.py
-│   ├── run_line.py
-│   ├── run_weighted.py
+│   ├── devign_preprocess.py
+│   ├── run_ablation_study.py
 │   ├── run_base.py
 │   ├── run_base_codeT5p.py
-│   ├── run_ablation_study.py
-│   └── run_gpt.py
+│   ├── run_gpt.py
+│   ├── run_line.py
+│   └── run_weighted.py
+├── detection_primevul/
+│   ├── primevul_preprocess.py
+│   ├── run_base_primevul.py
+│   ├── run_line_primevul.py
+│   └── run_weighted_primevul.py
 ├── download_unixcoder.py
 └── README.md
 ```
@@ -250,4 +322,4 @@ python run_gpt.py
 
 ## License
 
-This code is for research purposes. The datasets (Devign, Big-Vul) and UnixCoder model must be used in accordance with their respective licenses and terms of use.
+This code is for research purposes. The datasets (Devign, Big-Vul, PrimeVul) and UnixCoder model must be used in accordance with their respective licenses and terms of use.
