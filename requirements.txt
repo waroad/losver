@@ -1,0 +1,8 @@
+torch==2.4.1+cu121
+torchaudio==2.4.1+cu121
+torchvision==0.19.1+cu121
+tqdm==4.66.5
+transformers==4.19.0
+tensorboardX==2.6.2.2
+scikit-learn==1.5.2
+openai==1.82.0
