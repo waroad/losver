@@ -67,7 +67,7 @@ python primevul_preprocess.py
 
 ## Checkpoints for Quick Testing
 
-To test without retraining, download the pretrained checkpoints from the following anonymous Figshare link: [Download Checkpoints (Figshare)](https://figshare.com/s/5beb0f16a9233f73852b?file=54953453)
+To test without retraining, download the pretrained checkpoints from the following anonymous Figshare link: [Download Checkpoints (Figshare)](https://doi.org/10.6084/m9.figshare.29192708)
 
 ---
 
